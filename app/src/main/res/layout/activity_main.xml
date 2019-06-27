@@ -11,34 +11,48 @@
         android:id="@+id/whattime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="What time to wake up?"
+        android:text="@string/topmessage"
         android:textAlignment="center"
         android:textSize="30dp"
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/timepicker"/>
 
     <TimePicker
         android:id="@+id/timepicker"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:timePickerMode="clock"
-
-        tools:layout_editor_absoluteY="41dp"></TimePicker>
+        app:layout_constraintTop_toBottomOf="@id/whattime"
+        ></TimePicker>
 
     <Button
-        android:id="@+id/savenfc"
-        android:layout_width="match_parent"
+        android:id="@+id/setnfc"
+        android:layout_width="0dp"
         android:layout_height="50dp"
-        android:text="Scan NFC tag"
+        android:text="@string/setnfc"
         android:textAllCaps="false"
         android:textSize="20dp"
-        app:layout_constraintBottom_toTopOf="@id/setalarm"
-        />
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintBottom_toTopOf="@id/togglealarm"
+        app:layout_constraintEnd_toStartOf="@id/resetnfc"/>
 
     <Button
-        android:id="@+id/setalarm"
+        android:id="@+id/resetnfc"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="@string/resetnfc"
+        android:textAllCaps="false"
+        android:textSize="20dp"
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintBottom_toTopOf="@id/togglealarm"
+        app:layout_constraintStart_toEndOf="@id/setnfc"/>
+
+
+    <Button
+        android:id="@+id/togglealarm"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="Set alarm"
