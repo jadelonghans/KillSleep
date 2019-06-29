@@ -5,4 +5,6 @@
     <string name="resetnfc">Reset NFC tag</string>
     <string name="setnfc">Set NFC tag</string>
     <string name="topmessage">What time to wake up?</string>
+    <string name="toast_alarmSet">Alarm set!</string>
+    <string name="nfc_not_found">This device does not support NFC.</string>
 </resources>

@@ -1,19 +1,32 @@
 package jp.ac.titech.itpro.sdk.killsleep;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
+import android.content.Intent;
+import android.nfc.NfcAdapter;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
+
+    Context mainActivity = this;
+    private final static int REQ_ENABLE_NFC = 1111;
 
     private final static String TAG = MainActivity.class.getSimpleName();
     private final static String KEY_NAME = "MainActivity.name";
     private String name = "";
 
-    private boolean alarmEnabled;
+    private boolean alarmEnabled, nfcSet;
 
+    private NfcAdapter nfcAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,21 +37,84 @@ public class MainActivity extends AppCompatActivity {
             name = savedInstanceState.getString(KEY_NAME);
         }
 
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (nfcAdapter == null){
+            Toast.makeText(this, R.string.nfc_not_found, Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        else{
+            if(!nfcAdapter.isEnabled()){
+                Intent intent = new Intent(NfcAdapter.);
+                startActivityForResult(intent, REQ_ENABLE_NFC );
+            }
+            else{
+//                Toast.makeText(this, R.string.)
+            }
+        }
+
         alarmEnabled = false;
+        nfcSet = false;
+
+        final TextView topMessage = findViewById(R.id.topmessage);
         final Button toggleAlarm = findViewById(R.id.togglealarm);
         final Button setNfc = findViewById(R.id.setnfc);
         final Button resetNfc = findViewById(R.id.resetnfc);
+        final TimePicker timePicker = findViewById(R.id.timepicker);
 
-        resetNfc.setEnabled(false);
-        setNfc.setEnabled(true);
+        resetNfc.setEnabled(nfcSet);
+        setNfc.setEnabled(!nfcSet);
         toggleAlarm.setEnabled(true);
 
         toggleAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 alarmEnabled = !alarmEnabled;
-                if (alarmEnabled) toggleAlarm.setText(R.string.disable_alarm);
-                else toggleAlarm.setText(R.string.enable_alarm);
+
+                // disable nfc buttons
+                if(alarmEnabled){
+                    resetNfc.setEnabled(false);
+                    setNfc.setEnabled(false);
+
+                    toggleAlarm.setText(R.string.disable_alarm);
+
+                    Calendar calendar = Calendar.getInstance();
+
+                    if(Build.VERSION.SDK_INT >= 23) {
+
+                        calendar.set(
+                                calendar.get(Calendar.YEAR),
+                                calendar.get(Calendar.MONTH),
+                                calendar.get(Calendar.DAY_OF_MONTH),
+                                timePicker.getHour(),
+                                timePicker.getMinute(),
+                                0
+                        );
+                        topMessage.setText(new String ("Alarm set"  ));
+
+                    }else {
+                        calendar.set(
+                                calendar.get(Calendar.YEAR),
+                                calendar.get(Calendar.MONTH),
+                                calendar.get(Calendar.DAY_OF_MONTH),
+                                timePicker.getCurrentHour(),
+                                timePicker.getCurrentMinute(),
+                                0
+                        );
+                        topMessage.setText(new String ("Alarm set" ));
+                    }
+
+                    Toast.makeText(mainActivity, R.string.toast_alarmSet, Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    resetNfc.setEnabled(nfcSet);
+                    setNfc.setEnabled(!nfcSet);
+
+                    toggleAlarm.setText(R.string.enable_alarm);
+                    topMessage.setText(R.string.topmessage);
+                }
+
             }
         });
 
@@ -46,16 +122,18 @@ public class MainActivity extends AppCompatActivity {
         resetNfc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetNfc.setEnabled(false);
-                setNfc.setEnabled(true);
+                nfcSet = !nfcSet;
+                resetNfc.setEnabled(nfcSet);
+                setNfc.setEnabled(!nfcSet);
             }
         });
 
         setNfc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetNfc.setEnabled(true);
-                setNfc.setEnabled(false);
+                nfcSet = !nfcSet;
+                resetNfc.setEnabled(nfcSet);
+                setNfc.setEnabled(!nfcSet);
             }
         });
     }
