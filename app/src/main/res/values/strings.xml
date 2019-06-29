@@ -2,9 +2,9 @@
     <string name="app_name">KillSleep</string>
     <string name="disable_alarm">Disable Alarm</string>
     <string name="enable_alarm">Enable Alarm</string>
-    <string name="resetnfc">Reset NFC tag</string>
-    <string name="setnfc">Set NFC tag</string>
-    <string name="topmessage">What time to wake up?</string>
+    <string name="reset_nfc">Reset NFC tag</string>
+    <string name="set_nfc">Set NFC tag</string>
+    <string name="top_message">What time to wake up?</string>
     <string name="toast_alarmSet">Alarm set!</string>
     <string name="nfc_not_found">This device does not support NFC.</string>
 </resources>

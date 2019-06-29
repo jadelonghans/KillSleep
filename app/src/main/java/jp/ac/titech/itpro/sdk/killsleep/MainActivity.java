@@ -2,7 +2,6 @@ package jp.ac.titech.itpro.sdk.killsleep;
 
 import android.content.Context;
 import android.content.Intent;
-import android.nfc.NfcAdapter;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,8 +16,8 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
-    Context mainActivity = this;
-    private final static int REQ_ENABLE_NFC = 1111;
+    Context mainContext = this;
+    private final static int REQ_1 = 12;
 
     private final static String TAG = MainActivity.class.getSimpleName();
     private final static String KEY_NAME = "MainActivity.name";
@@ -26,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean alarmEnabled, nfcSet;
 
-    private NfcAdapter nfcAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,22 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             name = savedInstanceState.getString(KEY_NAME);
-        }
-
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        if (nfcAdapter == null){
-            Toast.makeText(this, R.string.nfc_not_found, Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-        else{
-            if(!nfcAdapter.isEnabled()){
-                Intent intent = new Intent(NfcAdapter.);
-                startActivityForResult(intent, REQ_ENABLE_NFC );
-            }
-            else{
-//                Toast.makeText(this, R.string.)
-            }
         }
 
         alarmEnabled = false;
@@ -105,14 +87,14 @@ public class MainActivity extends AppCompatActivity {
                         topMessage.setText(new String ("Alarm set" ));
                     }
 
-                    Toast.makeText(mainActivity, R.string.toast_alarmSet, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mainContext, R.string.toast_alarmSet, Toast.LENGTH_SHORT).show();
                 }
                 else{
                     resetNfc.setEnabled(nfcSet);
                     setNfc.setEnabled(!nfcSet);
 
                     toggleAlarm.setText(R.string.enable_alarm);
-                    topMessage.setText(R.string.topmessage);
+                    topMessage.setText(R.string.top_message);
                 }
 
             }
@@ -125,12 +107,19 @@ public class MainActivity extends AppCompatActivity {
                 nfcSet = !nfcSet;
                 resetNfc.setEnabled(nfcSet);
                 setNfc.setEnabled(!nfcSet);
+
             }
         });
 
         setNfc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // scan nfc tag
+                Intent intent = new Intent(MainActivity.this, NfcReader.class);
+//                intent.putExtra(NfcReader.INTENT_EXTRA, "hello");
+                startActivityForResult(intent, REQ_1);
+
                 nfcSet = !nfcSet;
                 resetNfc.setEnabled(nfcSet);
                 setNfc.setEnabled(!nfcSet);
@@ -173,5 +162,10 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         Log.d(TAG, "onSaveInstanceState");
         outState.putString(KEY_NAME, name);
+    }
+
+    @Override
+    protected void onActivityResult(int reqCode, int resCode, Intent data){
+        Log.d(TAG,"onActivityResult");
     }
 }
