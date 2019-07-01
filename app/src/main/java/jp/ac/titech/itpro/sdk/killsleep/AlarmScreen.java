@@ -2,21 +2,27 @@ package jp.ac.titech.itpro.sdk.killsleep;
 
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
-import android.nfc.tech.Ndef;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
-public class NfcReader extends AppCompatActivity {
+public class AlarmScreen extends AppCompatActivity {
+
     public static final String INTENT_EXTRA = "xyz" ;
     public static final String NFC_IDENTIFIER = "wxyz" ;
-    private final static String TAG = NfcReader.class.getSimpleName();
+    public final static String HEX_CODE = "HEX_CODE";
+    private final static String TAG = AlarmScreen.class.getSimpleName();
 
     private NfcAdapter nfcAdapter;
     private final static int REQ_ENABLE_NFC = 1111;
+    private String original_hex = null;
+
+    private MediaPlayer mediaPlayer;
 
 //    Intent intent;
 //    PendingIntent pendingIntent;
@@ -24,8 +30,20 @@ public class NfcReader extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate NfcReader");
+        Log.d(TAG, "onCreate AlarmScreen");
         setContentView(R.layout.nfc_reader);
+
+        mediaPlayer = MediaPlayer.create(this, Settings.System.DEFAULT_RINGTONE_URI);
+        mediaPlayer.start();
+        mediaPlayer.setLooping(true);
+
+        Intent intent = getIntent();
+        original_hex = intent.getStringExtra(HEX_CODE);
+        if (original_hex != null){
+            Log.d(TAG,"original hex is: "+ original_hex);
+        }
+        else
+            Log.d(TAG,"ERROR: original hex is null!");
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (nfcAdapter == null){
@@ -104,17 +122,27 @@ public class NfcReader extends AppCompatActivity {
 //        if ("text/plain".equals(intent.getType())) {
         if(intent.getParcelableExtra(NfcAdapter.EXTRA_TAG) != null){
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            Ndef ndef = Ndef.get(tag);
 
             // directly doing tag.getId() gave inconsistent values every time, converting to hex gave same codes consistently.
             String nfcIdentifier = toHex(tag.getId());
-            Log.d(TAG, nfcIdentifier);
 
             if(nfcIdentifier != null){
-                Intent data = new Intent();
-                data.putExtra(NFC_IDENTIFIER, nfcIdentifier);
-                setResult(RESULT_OK, data);
-                finish();
+                Log.d(TAG, nfcIdentifier);
+
+                if (nfcIdentifier.equals(original_hex)){
+                    Toast.makeText(this, "Correct Tag!", Toast.LENGTH_SHORT).show();
+                    mediaPlayer.stop();
+
+                    Intent data = new Intent(this, MainActivity.class);
+                    data.putExtra(NFC_IDENTIFIER, "alarm_diffused");
+                    data.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+                    data.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(data);
+                    finish();
+                }
+                else{
+                    Toast.makeText(this, "Wrong Tag!", Toast.LENGTH_SHORT).show();
+                }
             }
 
         } else {

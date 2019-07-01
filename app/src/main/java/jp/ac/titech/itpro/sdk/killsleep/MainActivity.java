@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     Context mainContext = this;
     private final static int REQ_1 = 12;
-    private final static String ALARM = "alarm";
+    private final static String HEX_CODE = "HEX_CODE";
     public static final String NFC_IDENTIFIER = "wxyz" ;
 
     private final static String TAG = MainActivity.class.getSimpleName();
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     AlarmManager alarmManager;
     PendingIntent pendingIntent;
 
-    private String hexString = null;
+    public String hexString = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         nfcSet = false;
 
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(pendingIntent);
 
         topMessage = findViewById(R.id.topmessage);
         toggleAlarm = findViewById(R.id.togglealarm);
@@ -70,10 +69,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-//                if (hexString == null){
-//                    Toast.makeText(MainActivity.this, "NFC not set!", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
+                if (hexString == null){
+                    Toast.makeText(MainActivity.this, "NFC not set!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 // disable nfc buttons
                 if(!alarmEnabled){
@@ -124,10 +123,6 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     // Cancel alarm
                     alarmManager.cancel(pendingIntent);
-                    // Put extra string into my_intent, indicates off button pressed
-                    Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
-                    intent.putExtra(ALARM, "alarm off");
-                    sendBroadcast(intent);
 
                     alarmEnabled = !alarmEnabled;
 
@@ -174,13 +169,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         Intent intent = new Intent(this, AlarmReceiver.class);
-
-        intent.putExtra(ALARM, "alarm on"); // to identify intent when received
+        Log.d(TAG, "hexString pushed: "+ hexString);
+        intent.putExtra(HEX_CODE, hexString); // to identify intent when received
 
         pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, timeInMillis, 10* 1000, pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, timeInMillis, 10* 1000, pendingIntent);
 
     }
 
@@ -188,6 +183,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Log.d(TAG, "onStart");
+
+        Intent intent = getIntent();
+        String state = intent.getStringExtra(NFC_IDENTIFIER);
+        if (state != null && state.equals("alarm_diffused")){
+            Log.d(TAG,"received state is: "+ state);
+
+            alarmEnabled = !alarmEnabled;
+
+                timePicker.setEnabled(true);
+
+                resetNfc.setEnabled(nfcSet);
+                setNfc.setEnabled(!nfcSet);
+
+                toggleAlarm.setText(R.string.enable_alarm);
+                topMessage.setText(R.string.top_message);
+        }
+        else
+            Log.d(TAG,"no intent was sent");
     }
 
     @Override
@@ -238,5 +251,24 @@ public class MainActivity extends AppCompatActivity {
                 hexString = new String(nfcIdentifier);
             }
         }
+
+//        else if (resCode == 100){
+//            String result = data.getStringExtra(NFC_IDENTIFIER);
+//            if(result != null && result.equals("match")){
+//                Log.d(TAG, "Alarm diffused.");
+//
+//                alarmEnabled = !alarmEnabled;
+//
+//                timePicker.setEnabled(true);
+//
+//                resetNfc.setEnabled(nfcSet);
+//                setNfc.setEnabled(!nfcSet);
+//
+//                toggleAlarm.setText(R.string.enable_alarm);
+//                topMessage.setText(R.string.top_message);
+//            }
+//        }
+
+        else Log.d(TAG,"onActivityResult, resCode:" + String.valueOf(resCode));
     }
 }

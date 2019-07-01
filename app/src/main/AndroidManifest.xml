@@ -37,8 +37,10 @@
             android:enabled="true"
             android:exported="true" />
 
-        <service android:name="AlarmPlayer"
-            android:enabled="true"></service>
+        <activity
+            android:name=".AlarmScreen"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>
