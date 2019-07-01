@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     Context mainContext = this;
     private final static int REQ_1 = 12;
+    public static final String NFC_IDENTIFIER = "wxyz" ;
 
     private final static String TAG = MainActivity.class.getSimpleName();
     private final static String KEY_NAME = "MainActivity.name";
@@ -120,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
 //                intent.putExtra(NfcReader.INTENT_EXTRA, "hello");
                 startActivityForResult(intent, REQ_1);
 
+                // modify this based on if setNfc returns a successful scan
                 nfcSet = !nfcSet;
                 resetNfc.setEnabled(nfcSet);
                 setNfc.setEnabled(!nfcSet);
@@ -167,5 +169,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int reqCode, int resCode, Intent data){
         Log.d(TAG,"onActivityResult");
+
+        if (resCode == RESULT_OK){
+            String nfcIdentifier = data.getStringExtra(NFC_IDENTIFIER);
+            if(nfcIdentifier != null){
+                Toast.makeText(this, nfcIdentifier, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
