@@ -32,6 +32,13 @@
                 <category android:name="android.nfc.category.DEFAULT"/>
             </intent-filter>
         </activity>
+
+        <receiver android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
+        <service android:name="AlarmPlayer"
+            android:enabled="true"></service>
     </application>
 
 </manifest>
