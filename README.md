@@ -1,6 +1,6 @@
 # KillSleep 
  Wake up when you need to.
- A simple native android app in Java to practice some android components.
+ A simple native android app in Java to practice using some android components.
  
  ## Features:
  - Alarm functionality.
@@ -9,6 +9,5 @@
  - To dismiss alarm, touch your phone with a NFC tag far from your bed.
 
 ## Relevant topics:
- - Background task (ToDo).
- - Timer.
- - NFC sensor.
+ - AlarmManager.
+ - NFC reading.
