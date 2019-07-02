@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     String minute_s = String.valueOf(minute);
 
                     if(hour<10) hour_s = "0" + hour_s;
-                    if(minute<10) hour_s = "0" + minute_s;
+                    if(minute<10) minute_s = "0" + minute_s;
 
                     // set alarm
                     setAlarm(calendar.getTimeInMillis(), calendar);

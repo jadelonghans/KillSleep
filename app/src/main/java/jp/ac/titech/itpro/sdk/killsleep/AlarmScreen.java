@@ -31,7 +31,7 @@ public class AlarmScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate AlarmScreen");
-        setContentView(R.layout.nfc_reader);
+        setContentView(R.layout.alarm_screen);
 
         mediaPlayer = MediaPlayer.create(this, Settings.System.DEFAULT_RINGTONE_URI);
         mediaPlayer.start();
