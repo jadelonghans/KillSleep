@@ -65,6 +65,17 @@ public class MainActivity extends AppCompatActivity {
         setNfc.setEnabled(!nfcSet);
         toggleAlarm.setEnabled(true);
 
+        // check is an alarm was already set before launching this instance of app
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        boolean alarmSetAlready = (PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_NO_CREATE) != null);
+        if (alarmSetAlready){
+            alarmEnabled = true;
+            toggleAlarm.setText(R.string.disable_alarm);
+            timePicker.setEnabled(false);
+            resetNfc.setEnabled(false);
+            setNfc.setEnabled(false);
+        }
+
         toggleAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
