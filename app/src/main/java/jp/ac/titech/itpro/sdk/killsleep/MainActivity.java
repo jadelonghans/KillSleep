@@ -66,15 +66,15 @@ public class MainActivity extends AppCompatActivity {
         toggleAlarm.setEnabled(true);
 
         // check is an alarm was already set before launching this instance of app
-        Intent intent = new Intent(this, AlarmReceiver.class);
-        boolean alarmSetAlready = (PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_NO_CREATE) != null);
-        if (alarmSetAlready){
-            alarmEnabled = true;
-            toggleAlarm.setText(R.string.disable_alarm);
-            timePicker.setEnabled(false);
-            resetNfc.setEnabled(false);
-            setNfc.setEnabled(false);
-        }
+//        Intent intent = new Intent(this, AlarmReceiver.class);
+//        boolean alarmSetAlready = (PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_NO_CREATE) != null);
+//        if (alarmSetAlready){
+//            alarmEnabled = true;
+//            toggleAlarm.setText(R.string.disable_alarm);
+//            timePicker.setEnabled(false);
+//            resetNfc.setEnabled(false);
+//            setNfc.setEnabled(false);
+//        }
 
         toggleAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                // disable nfc buttons
                 if(!alarmEnabled){
 
                     Calendar calendar = Calendar.getInstance();
@@ -200,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
         if (state != null && state.equals("alarm_diffused")){
             Log.d(TAG,"received state is: "+ state);
 
-            alarmEnabled = !alarmEnabled;
+            alarmEnabled = !alarmEnabled;      //this should be false.
 
                 timePicker.setEnabled(true);
 

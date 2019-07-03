@@ -4,7 +4,6 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
-import android.nfc.tech.Ndef;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -104,7 +103,7 @@ public class NfcReader extends AppCompatActivity {
 //        if ("text/plain".equals(intent.getType())) {
         if(intent.getParcelableExtra(NfcAdapter.EXTRA_TAG) != null){
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            Ndef ndef = Ndef.get(tag);
+//            Ndef ndef = Ndef.get(tag);
 
             // directly doing tag.getId() gave inconsistent values every time, converting to hex gave same codes consistently.
             String nfcIdentifier = toHex(tag.getId());
